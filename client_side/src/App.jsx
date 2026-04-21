@@ -6,8 +6,10 @@ import Payslips from "./pages/Payslips"
 import PrintPaySlip from "./pages/PrintPaySlip"
 import Settings from "./pages/Settings"
 import Layout from "./pages/Layout"
-import Dashboard from "./pages/dashboard"
+import Dashboard from "./pages/Dashboard"
 import LoginFrom from "./components/LoginFrom"
+import Attendance from "./pages/Attendance"
+import Employees from "./pages/Employees"
 
 const App = () => {
   return (
@@ -21,6 +23,8 @@ const App = () => {
 
       <Route element={<Layout/>} >
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/attendance" element={<Attendance />} />
+        <Route path="/employees" element={<Employees />} />
         <Route path="/leave" element={<Leave />} />
         <Route path="/payslips" element={<Payslips />} />
         <Route path="/print-payslip" element={<PrintPaySlip />} />

@@ -1,6 +1,6 @@
 import  {ShieldIcon, UserIcon } from "lucide-react"
 
-function LoginLeftSide() {
+const LoginLeftSide = () => {
 
     return (
         <div className="hidden md:flex w-1/2 bg-indigo-950 relative overflow-hidden border-r border-state-200">
