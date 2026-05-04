@@ -2,6 +2,7 @@ import { DEPARTMENTS } from "../constants/departments.js";
 import Attendance from "../models/Attendance.js";
 import Employee from "../models/Employee.js";
 import LeaveApplication from "../models/LeaveApplication.js";
+import Payslip from "../models/Payslip.js";
 
 
 // get dashboard for employee
@@ -12,7 +13,7 @@ export const getDashboard = async (req, res)=>{
         const session = req.session;
         if(session.role === "ADMIN"){
             const [totalEmployees, todayAttendance, pendingLeaves] = await Promise.all([
-                Employee.countDocuments({isDelete:{$n:true}}),
+                Employee.countDocuments({isDelete:{$ne:true}}),
                 Attendance.countDocuments({
                     date:{
                         $gte:new Date(new Date().setHours(0,0,0,0)),
@@ -24,7 +25,8 @@ export const getDashboard = async (req, res)=>{
 
             ]);
             return res.json({
-                success:ture, role:"Admin",
+                success:true,
+                role:"ADMIN",
                 totalEmployees,
                 totalDepartments:DEPARTMENTS.length,
                 todayAttendance,
@@ -39,8 +41,8 @@ export const getDashboard = async (req, res)=>{
                 Attendance.countDocuments({
                     employeeId : employee._id,
                     date:{
-                        $gte:new Date(today.getFullYear(), today.getMonth(),1),
-                        $lt:new Date(today.getFullYear(), today.getMonth(),+1, 1)
+                        $gte:new Date(today.getFullYear(), today.getMonth(), 1),
+                        $lt:new Date(today.getFullYear(), today.getMonth() + 1, 1)
                     }
 
                 }),
@@ -54,7 +56,7 @@ export const getDashboard = async (req, res)=>{
             return res.json({
                 role:"EMPLOYEE",
                 employee:{...employee, id: employee._id.toString()},
-                currentMonthAttendance:
+                currentMonthAttendance,
                 pendingLeaves,
                 latestPayslip : latestPayslip ? {...latestPayslip, id:latestPayslip._id.toString()} : null
             });

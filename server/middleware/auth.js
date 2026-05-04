@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 export const protect = (req,res,next) => {
     try {
         const authHeader = req.headers.authorization;
-        if(!authHeader || !authHeader.startsWth("Bearer")){
+        if(!authHeader || !authHeader.startsWith("Bearer ")){
             return res.status(401).json({error: "Unauthorized"});
         }
 
@@ -11,12 +11,12 @@ export const protect = (req,res,next) => {
         const session = jwt.verify(token, process.env.JWT_SECRET);
 
         if(!session){
-            return req.status(401).json({error:"Unauthorized"});
+            return res.status(401).json({error:"Unauthorized"});
         }
         req.session = session;
         next();
     } catch(error){
-        return req.status(500).json({error:"Unauthorized"});
+        return res.status(500).json({error:"Unauthorized"});
     }
 }
 
