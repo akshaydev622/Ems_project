@@ -23,8 +23,8 @@ const Sidebar = () => {
         setMobileOpen(false);
     }, [pathname]);
 
-    // const role = user?.role;
-    const role = "" || "EMPLOYEE";
+    const role = user?.role;
+
     const navItems = [
         { name: "Dashboard", href: "/dashboard", icon: LayoutGridIcon },
         role === "ADMIN" ?
@@ -68,7 +68,7 @@ const Sidebar = () => {
                         </div>
                         <div className="">
                             <p>{userName}</p>
-                            <p>{role === "ADMIN" ? "Administrator" : "Employee"}</p>
+                            <p className="text-[11px] text-slate-500 font-medium">{role === "ADMIN" ? "Administrator" : "Employee"}</p>
                         </div>
                     </div>
                 </div>

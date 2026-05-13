@@ -1,4 +1,5 @@
 import Payslip from "../models/Payslip.js";
+import Employee from "../models/Employee.js";
 
 
 // create payslip
@@ -20,7 +21,7 @@ export const createPayslip = async (req,res) => {
             year:Number(year),
             basicSalary: Number(basicSalary),
             allowances: Number(allowances || 0),
-            deductions: Numeber(deductions || 0),
+            deductions: Number(deductions || 0),
             netSalary,
         });
 
@@ -52,8 +53,17 @@ export const getPayslips = async (req,res) =>{
             const employee = await Employee.findOne({userId: session.userId});
             if(!employee) return res.status(400).json({error:"Employee not found"});
 
-            const payslip = await Payslip.find({employeeId: employee._id}).sort({createdAt:-1});
-            return res.json({success:true});
+            const payslips = await Payslip.find({employeeId: employee._id}).populate("employeeId").sort({createdAt:-1});
+            const data = payslips.map((p)=>{
+                const obj = p.toObject();
+                return{
+                    ...obj,
+                    id: obj._id.toString(),
+                    employee: obj.employeeId,
+                    employeeId: obj.employeeId?._id?.toString(),
+                }
+            })
+            return res.json({data});
         }
         
 
@@ -68,7 +78,7 @@ export const getPayslipById = async (req,res)=>{
     try{
         const payslip = await Payslip.findById(req.params.id).populate("employeeId").lean();
 
-        if(!payslip) return res.staus(404).json({error:"Not found"});
+        if(!payslip) return res.status(404).json({error:"Not found"});
 
         const result = {
             ...payslip,

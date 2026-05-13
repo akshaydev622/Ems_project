@@ -5,20 +5,28 @@ import { Plus, Search, X } from 'lucide-react';
 import { PalmtreeIcon, PlusIcon, ThermometerIcon, UmbrellaIcon } from 'lucide-react';
 import LeaveHistory from '../components/leave/leaveHistory';
 import ApplyLeaveModel from '../components/leave/ApplyLeaveModel';
+import toast from 'react-hot-toast';
+import api from '../api/axios';
+import { useAuth } from "../context/authcontext.jsx"
 
 const Leave = () => {
-
+  const {user} = useAuth();
   const [leaves, setLeaves] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isDeleted, setIsDeleted] = useState(false);
   const [showModel, setShowModel] = useState(false);
+  const isAdmin = user?.role === "ADMIN";
 
-  const isAdmin = false;
-  const fetchLeaves = useCallback(()=>{
-    setLeaves(dummyLeaveData);
-    setTimeout(()=>{
+  const fetchLeaves = useCallback( async ()=>{
+    try{
+      const res = await api.get("/leaves");
+      setLeaves(res.data.data || []);
+      if(res.data.employee?.isDeleted) setIsDeleted(true);
+    }catch(error){
+      toast.error(error.response?.data?.error || error.message);
+    }finally{
       setLoading(false);
-    },1000);
+    }
   },[])
 
   useEffect(()=>{

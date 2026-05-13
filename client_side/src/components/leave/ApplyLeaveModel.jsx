@@ -1,5 +1,7 @@
 import {useState} from 'react'
 import { CalendarDays, FileText, Loader2, Plus, Search, Send, X } from 'lucide-react';
+import toast from 'react-hot-toast';
+import api from '../../api/axios';
 
 const ApplyLeaveModel = ({open, onClose, onSuccess}) => {
     const [loading, setLoading] = useState(false);
@@ -9,7 +11,19 @@ const ApplyLeaveModel = ({open, onClose, onSuccess}) => {
     const minDate = tomorrow.toISOString().split('T')[0];
 
     const handleSubmit = async (e)=>{
-        e.prventDefault();
+        e.preventDefault();
+        setLoading(true);
+        const formData = new FormData(e.currentTarget);
+        const data = Object.fromEntries(formData.entries());
+        try{
+            await api.post("/leaves", data);
+            onSuccess();
+            onClose();
+        }catch(error){
+            toast.error(error.response?.data?.error || error.message);
+        }finally{
+            setLoading(false);
+        }
     }
 
     if(!open) return null;
@@ -44,7 +58,7 @@ const ApplyLeaveModel = ({open, onClose, onSuccess}) => {
 
             <div>
                 <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
-                    <CalendarDays w-4 h-4 text-slate-400 />Duration
+                    <CalendarDays className="w-4 h-4 text-slate-400" />Duration
                 </label>
                 <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -70,7 +84,7 @@ const ApplyLeaveModel = ({open, onClose, onSuccess}) => {
                     <button onClick={onClose} type="button" className="btn-secondary flex-1" >
                         Cancel
                     </button>
-                    <button onClick={onClose} type="button" className="btn-primary flex-1 flex items-center justify-center gap-2" disabled={loading} >
+                    <button type="submit" className="btn-primary flex-1 flex items-center justify-center gap-2" disabled={loading} >
                         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                         {loading ? "Submitting..." : "Submit"}
                     </button>

@@ -83,8 +83,8 @@ export const updateLeaveStatus = async (req,res)=>{
     try{
 
         const session = req.session;
-        const status = req.body;
-        if(!["APPROVED", "PENDING", "REJECT"].includes(status)){
+        const { status } = req.body;
+        if(!["APPROVED", "PENDING", "REJECTED"].includes(status)){
             return res.status(400).json({error:"Invalid Status"});
         };
         const leave = await LeaveApplication.findByIdAndUpdate(req.params.id, {status}, {returnDocument: "after"});
