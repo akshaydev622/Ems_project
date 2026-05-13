@@ -15,7 +15,7 @@ export const clockInOut = async (req, res)=>{
     today.setHours(0, 0, 0, 0);
 
     const existing = await Attendance.findOne({
-        employeedId : employee._id,
+        employeeId : employee._id,
         date : today,
     });
 
@@ -47,10 +47,9 @@ export const clockInOut = async (req, res)=>{
         existing.dayType = dayType;
 
         await existing.save();
-        return res.json({success:type, type:"CHECK_OUT", data:existing });
+        return res.json({success:true, type:"CHECK_OUT", data:existing });
     }else{
-        console.log("Attendence error : ", error);
-        return res.status(500).json({error:"Operation Failed"});
+        return res.status(400).json({error:"Already checked out for today"});
     }
 
 
@@ -63,8 +62,8 @@ export const getAttendance = async (req,res)=>{
         const employee = await Employee.findOne({userId : session.userId});
         if(!employee) return res.status(400).json({error: "Employee not found"});
 
-        const limit = perseInt(req.query.limit || 30);
-        const history = (await Attendance.find({employeeId : employee._id})).sort({date:-1}).limit(limit);
+        const limit = parseInt(req.query.limit || 30, 10);
+        const history = await Attendance.find({employeeId : employee._id}).sort({date:-1}).limit(limit);
 
         return res.json({success:true, data:history, employee : {isDeleted : employee.isDeleted}})
     }catch(error){

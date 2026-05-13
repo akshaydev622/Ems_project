@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
+import api from '../api/axios';
 import { DEPARTMENTS, dummyEmployeeData } from '../assets/assets.jsx';
 import { Plus, Search, X } from 'lucide-react';
 import EmployeeCard from '../components/EmployeeCard.jsx';
@@ -15,11 +16,15 @@ const Employees = () => {
   
 
   const fetchEmployees = useCallback(async ()=>{
-    setLoading(true);
-    setEmployees(dummyEmployeeData.filter((emp)=>(selectedDept ? emp.department === selectedDept : emp)));
-    setTimeout(()=>{
+    try{
+      const url = selectedDept ? `/employees?department=${selectedDept}` : "/employees";
+      const res = await api.get(url)
+      setEmployees(res.data.employees);
+    }catch(error){
+      console.error("Failed to fetch employees");
+    }finally{
       setLoading(false);
-    },1000)
+    }
   },[selectedDept]) 
 
   useEffect(()=>{
@@ -71,7 +76,7 @@ const Employees = () => {
         {showCreateModal && (
           <div className="fixed bg-black/40 backdrop-blur-sm inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto" onClick={()=>setShowCreateModal(false)}>
             <div className="fidex inset-0" />
-            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl my-8 animate-fade-in" onClick={(e)=>e.stopPropagation()}>
+            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl animate-fade-in mt-100" onClick={(e)=>e.stopPropagation()}>
               <div className="flex items-center justify-between p-6 pb-0">
                 <div>
                   <h2 className="text-lg font-semibold text-slate-900">Add New Employee</h2>
@@ -95,7 +100,7 @@ const Employees = () => {
 
         {editEmployee && (
           <div className="fixed bg-black/40 backdrop-blur-sm inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto" onClick={()=>setEditEmployee(null)} >
-            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl my-8 animate-fade-in" onClick={(e)=>e.stopPropagation()}>
+            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl my-8 animate-fade-in mt-100" onClick={(e)=>e.stopPropagation()}>
               <div className="flex items-center justify-between p-6 pb-0">
                 <div>
                   <h2 className="text-lg font-semibold text-slate-900">Edit Employee</h2>

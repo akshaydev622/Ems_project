@@ -2,12 +2,23 @@ import React, { useState } from 'react'
 import { getDayTypeDisplay, getWorkingHoursDisplay } from '../../assets/assets'
 import {format} from 'date-fns'
 import { CheckIcon, Loader2, X } from 'lucide-react';
+import toast from 'react-hot-toast';
+import api from '../../api/axios';
 
 const LeaveHistory = ({leaves, isAdmin, onUpdate}) => {
     const [processing, setProcessing] = useState(null);
 
     const handleStateUpdate = async (id, status)=>{
         setProcessing(id);
+        try{
+            await api.patch(`/leaves/${id}`, {status});
+            onUpdate();
+            toast.success("Leave application updated successfully");
+        }catch(error){
+            toast.error(error.response?.data?.error || error.message);
+        }finally{
+            setProcessing(null);
+        }
     }
 
   return (

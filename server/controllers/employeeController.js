@@ -1,4 +1,5 @@
 import Employee from "../models/Employee.js";
+import User from "../models/User.js";
 import bcrypt from "bcrypt";
 
 
@@ -10,7 +11,7 @@ export const getEmployees = async (req, res) => {
         const where = {};
         if(department) where.department = department;
 
-        const employees = await (await Employee.find(where)).toSorted({createdAt: -1}).populate("userId", "email role").lean();
+        const employees = await Employee.find(where).sort({createdAt: -1}).populate("userId", "email role").lean();
 
         const result = employees.map((emp) => ({
             ...emp,
@@ -31,22 +32,21 @@ export const getEmployees = async (req, res) => {
 // POST /api/create-employee
 export const createEmployee = async (req, res) => {
     try {
-        const {firstName, lastName, email, phone, position, department, basicSalary, allowance, deductions, joinDate, password, role, bio} = req.body;
+        const {firstName, lastName, email, phone, position, department, basicSalary, allowances, deductions, joinDate, password, role, bio} = req.body;
 
         if(!firstName || !email || !phone || !password) {
             return res.status(400).json({success:false, message:"firstName, email, phone and password are required"});
         }
 
-        const haspassword = await bcrypt.hash(password, 10);
-        const user = await Employee.create({
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = await User.create({
             email,
-            password:haspassword,
+            password: hashedPassword,
             role: role || "EMPLOYEE",
-
         });
 
         const employee = await Employee.create({
-            userId:user._id,
+            userId: user._id,
             firstName,
             lastName,
             email,
@@ -54,9 +54,9 @@ export const createEmployee = async (req, res) => {
             position,
             department: department || "Engineering",
             basicSalary: Number(basicSalary) || 0,
-            allowances: Number(allowance) || 0,
+            allowances: Number(allowances) || 0,
             deductions: Number(deductions) || 0,
-            joinDate: new Date(joinDate) || new Date(),
+            joinDate: joinDate ? new Date(joinDate) : new Date(),
             bio: bio || "",
         });
         return res.status(201).json({success:true, message:"Employee created successfully", employee});
@@ -73,13 +73,14 @@ export const createEmployee = async (req, res) => {
 export const updateEmployee = async (req, res) => {
      try {
         const {id} = req.params;
-        const {firstName, lastName, email, phone, position, department, basicSalary, allowance, deductions, password, role, bio, employeeStatus} = req.body;
+        const {firstName, lastName, email, phone, position, department, basicSalary, allowances, deductions, joinDate, password, role, bio, employmentStatus, employeeStatus} = req.body;
 
         const employee = await Employee.findById(id);
         if(!employee) {
             return res.status(404).json({success:false, message:"Employee not found"});
         };
 
+        const status = employmentStatus || employeeStatus || employee.employeeStatus;
 
         await Employee.findByIdAndUpdate(id, {
             firstName,
@@ -89,10 +90,11 @@ export const updateEmployee = async (req, res) => {
             position,
             department: department || "Engineering",
             basicSalary: Number(basicSalary) || 0,
-            allowances: Number(allowance) || 0,
+            allowances: Number(allowances) || 0,
             deductions: Number(deductions) || 0,
-            joinDate: new Date(joinDate) || new Date(),
+            joinDate: joinDate ? new Date(joinDate) : employee.joinDate,
             bio: bio || "",
+            employeeStatus: status,
         });
 
         // user update 

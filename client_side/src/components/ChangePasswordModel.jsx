@@ -1,5 +1,7 @@
 import { Loader2Icon, Lock, LockIcon, X } from 'lucide-react';
 import {useState} from 'react'
+import api from '../api/axios';
+import toast from 'react-hot-toast';
 
 const ChangePasswordModel = ({open, onClose}) => {
     const [loading, setLoading] = useState(false);
@@ -7,6 +9,22 @@ const ChangePasswordModel = ({open, onClose}) => {
 
     const handleSubmit = async (e)=>{
         e.preventDefault();
+        setLoading(true);
+        setMessage({type:"", text:""});
+        const formData = new FormData(e.target);
+        const currentPassword = formData.get("currentPassword");
+        const newPassword = formData.get("newPassword");
+        try{
+            const {data} = await api.post("/auth/change-password", {currentPassword, newPassword});
+            if(!data.success) throw new Error(data.error || "Failed to change password");
+            toast.success("Password updated successfully");
+            e.target.reset();
+            onClose();
+        }catch(error){
+            toast.error(error.response?.data?.error || error.message || "Something went wrong");
+        }finally{
+            setLoading(false);
+        }
     }
 
     if(!open) return null;
@@ -41,7 +59,7 @@ const ChangePasswordModel = ({open, onClose}) => {
                     <button type="button" onClick={onClose} className="btn-secondary flex-1 ">
                         Cancel
                     </button>
-                    <button type="submit" disabled={loading} onClick={handleSubmit} className="btn-primary flex-1 ">
+                    <button type="submit" disabled={loading} className="btn-primary flex-1 ">
                         {loading && <Loader2Icon className="w-4 h-4 animate-spin" />}
                         Update Password
                     </button>

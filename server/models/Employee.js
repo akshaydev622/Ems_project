@@ -7,7 +7,6 @@ const employeeSchema = new mongoose.Schema({
     lastName: {type:String},
     email: {type:String, required:true, unique:true},
     phone: {type:String, required:true, unique:true},
-    password: {type:String, required:true},
     position: {type:String},
     basicSalary: {type:Number, default:0},
     allowances: {type:Number, default:0},
