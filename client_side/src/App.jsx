@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard"
 import LoginFrom from "./components/LoginFrom"
 import Attendance from "./pages/Attendance"
 import Employees from "./pages/Employees"
+import Departments from "./pages/Departments"
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
       <Route element={<Layout/>} >
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/attendance" element={<Attendance />} />
+        <Route path="/departments" element={<Departments />} />
         <Route path="/employees" element={<Employees />} />
         <Route path="/leave" element={<Leave />} />
         <Route path="/payslips" element={<Payslips />} />

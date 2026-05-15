@@ -5,7 +5,6 @@ import toast from 'react-hot-toast';
 
 const CheckinButton = ({todayRecord, onAction}) => {
     const [loading, setLoading] = useState(false);
-    console.log(todayRecord);
     const handleAttendance = async ()=>{
         setLoading(true);
         try{

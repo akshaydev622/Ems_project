@@ -1,13 +1,15 @@
 import { Building2Icon, CalendarIcon, FileTextIcon, UserIcon, ArrowRightIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/authcontext.jsx';
 
 const AdminDashboard = ({data}) => {
+  const { user } = useAuth();
 
     const stats = [
         { icons: UserIcon, value: data.totalEmployees, label:"Total Employees", description:"Active Workforce" },
         { icons: Building2Icon, value: data.totalDepartments, label:"Total Departments", description:"Organizational Units" },
         { icons: CalendarIcon, value: data.todayAttendance, label:"Today's Attendance", description:"Current day's attendance" },
-        { icons: FileTextIcon, value: data.pandingLeaves, label:"Panding Leaves", description:"Awaiting approval " },
+        { icons: FileTextIcon, value: data.pendingLeaves, label:"Pending Leaves", description:"Awaiting approval" },
     ];
   return (
     <div className="animate-fade-in">
@@ -30,14 +32,6 @@ const AdminDashboard = ({data}) => {
                         
                 </div>
             ))}
-        </div>
-        <div className="flex flex-col sm:flex-row gap-3">
-            <Link to="/attendance" className="btn-primary text-center inline-flex items-center justify-center gap-2">
-                Mark Attendance <ArrowRightIcon className='size-4'/>
-            </Link>
-            <Link to="/leaves" className="btn-secondary text-center">
-                Apply for Leaves
-            </Link>
         </div>
     </div>
   )
