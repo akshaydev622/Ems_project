@@ -30,8 +30,7 @@ const ApplyLeaveModel = ({open, onClose, onSuccess}) => {
 
   return (
     <div className="fixed bg-black/40 backdrop-blur-sm inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto" onClick={onClose}>
-    <div className="fidex inset-0" />
-    <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl my-8 animate-fade-in" onClick={(e)=>e.stopPropagation()}>
+    <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-xl my-8 animate-fade-in" onClick={(e)=>e.stopPropagation()}>
         <div className="flex items-center justify-between p-6 pb-0">
         <div>
             <h2 className="text-lg font-semibold text-slate-900">Apply Leave</h2>

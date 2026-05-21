@@ -7,7 +7,7 @@ const EmployeeDashboard = ({ data }) => {
 
     const cards = [
         { icons: CalendarIcon, value: data.currentMonthAttendance, title:"Days Present", subtitle:"This month" },
-        { icons: FileTextIcon, value: data.pandingLeaves, title:"Panding Leaves", subtitle:"Awaiting approval" },
+        { icons: FileTextIcon, value: data.pendingLeaves, title:"Pending Leaves", subtitle:"Awaiting approval" },
         { icons: DollarSignIcon, value: data.latestPayslip ? `₹${data.latestPayslip.netSalary?.toLocaleString()}` : "N/A", title:"Latest Payslip", subtitle:"Most recent payout" }
     ];
   return (
@@ -36,7 +36,7 @@ const EmployeeDashboard = ({ data }) => {
             <Link to="/attendance" className="btn-primary text-center inline-flex items-center justify-center gap-2">
                 Mark Attendance <ArrowRightIcon className='size-4'/>
             </Link>
-            <Link to="/leaves" className="btn-secondary text-center">
+            <Link to="/leave" className="btn-secondary text-center">
                 Apply for Leaves
             </Link>
         </div>

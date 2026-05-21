@@ -1,7 +1,7 @@
 import { useState, useEffect, use } from "react";
 import {Link, useLocation} from "react-router-dom"
 import { dummyProfileData } from "../assets/assets";
-import { CalendarIcon, ChevronRightIcon, DollarSignIcon, FileTextIcon, LayoutGridIcon, Loader2, LogOutIcon, LucideLogOut, MenuIcon, SettingsIcon, UserIcon, XIcon } from "lucide-react";
+import { CalendarIcon, ChevronRightIcon, DollarSignIcon, FileTextIcon, LayoutGridIcon, Loader2, LogOutIcon, LucideLogOut, MenuIcon, SettingsIcon, UserIcon, XIcon, Building2Icon } from "lucide-react";
 import { useAuth } from "../context/authcontext";
 import api from "../api/axios";
 
@@ -25,15 +25,30 @@ const Sidebar = () => {
 
     const role = user?.role;
 
-    const navItems = [
-        { name: "Dashboard", href: "/dashboard", icon: LayoutGridIcon },
-        role === "ADMIN" ?
-        { name: "Employees", href: "/employees", icon: UserIcon } :
-        { name: "Attendance", href: "/attendance", icon: CalendarIcon },
-        { name: "Leave", href: "/leave", icon: FileTextIcon },
-        { name: "payslips", href: "/payslips", icon: DollarSignIcon },
-        { name: "Settings", href: "/settings", icon: SettingsIcon },
-    ];
+    const roleNavItems = {
+        ADMIN: [
+            { name: "Dashboard", href: "/dashboard", icon: LayoutGridIcon },
+            { name: "Employees", href: "/employees", icon: UserIcon },
+            { name: "Departments", href: "/departments", icon: Building2Icon },
+            { name: "Leave", href: "/leave", icon: FileTextIcon },
+            { name: "Payslips", href: "/payslips", icon: DollarSignIcon },
+            { name: "Settings", href: "/settings", icon: SettingsIcon },
+        ],
+        EMPLOYEE: [
+            { name: "Dashboard", href: "/dashboard", icon: LayoutGridIcon },
+            { name: "Attendance", href: "/attendance", icon: CalendarIcon },
+            { name: "Leave", href: "/leave", icon: FileTextIcon },
+            { name: "Payslips", href: "/payslips", icon: DollarSignIcon },
+            { name: "Settings", href: "/settings", icon: SettingsIcon },
+        ],
+        DEFAULT: [
+            { name: "Dashboard", href: "/dashboard", icon: LayoutGridIcon },
+            { name: "Leave", href: "/leave", icon: FileTextIcon },
+            { name: "Settings", href: "/settings", icon: SettingsIcon },
+        ]
+    };
+
+    const navItems = roleNavItems[role] || roleNavItems.DEFAULT;
 
     const handleLogout = () =>{
         logout();

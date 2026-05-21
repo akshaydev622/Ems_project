@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { dummyAttendanceData } from '../assets/assets';
 import Loading from '../components/Loading';
 import CheckinButton from '../components/attendance/CheckinButton';
 import AttendanceStats from '../components/attendance/AttendanceStats';
 import AttendanceHistory from '../components/attendance/AttendanceHistory';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
+import { useAuth } from '../context/authcontext.jsx';
 
 const Attendance = () => {
+  const { user, loading: authLoading } = useAuth();
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isDeleted, setIsDeleted] = useState(false);
@@ -26,15 +27,34 @@ const Attendance = () => {
   },[]);
 
   useEffect(()=>{
+    if(user?.role !== "EMPLOYEE"){
+      setLoading(false);
+      return;
+    }
     fetchData();
-  },[fetchData])
+  },[fetchData, user])
 
-  if(loading) return <Loading />;
+  if(authLoading || loading) return <Loading />;
 
   const today = new Date();
   today.setHours(0,0,0,0)
 
   const todayRecord = history.find( (r)=> new Date(r.date).toDateString() === today.toDateString());
+
+  if(user?.role !== "EMPLOYEE"){
+    return (
+      <div className="animate-fade-in">
+        <div className="page-header">
+          <h1 className="page-title">Attendance</h1>
+          <p className="page-subtitle">Attendance is available only for employees.</p>
+        </div>
+        <div className="p-6 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700">
+          <p className="font-medium">Attendance access</p>
+          <p className="mt-2 text-sm text-slate-600">Your current account role does not have an attendance record. Contact your administrator if this is incorrect.</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="animate-fade-in">
