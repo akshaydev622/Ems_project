@@ -14,6 +14,7 @@ import dashboardRouter from './routes/dashboardRoutes.js';
 import { serve } from "inngest/express";
 import { inngest, functions } from "./innegest/index.js"
 import departmentRouter from './routes/departmentRoutes.js';
+import leaveTypeRouter from './routes/leaveTypeRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -33,6 +34,7 @@ app.use("/api/leaves/", leaveRouter);
 app.use("/api/payslips/", payslipRouter);
 app.use("/api/dashboard/", dashboardRouter);
 app.use("/api/departments/", departmentRouter);
+app.use("/api/leave-types/", leaveTypeRouter);
 
 app.use("/api/inngest", serve({ client: inngest, functions }));
 
