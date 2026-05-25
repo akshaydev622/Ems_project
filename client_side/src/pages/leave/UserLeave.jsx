@@ -73,7 +73,7 @@ const UserLeave = () => {
             ))}
             </div>
             <LeaveHistory leaves={leaves} isAdmin={isAdmin} onUpdate={fetchLeaves} />
-            <ApplyLeaveModel open={showModel} onClose={() => setShowModel(false)} onSuccess={() => { fetchLeaves(); onSuccess?.(); }} />
+            <ApplyLeaveModel open={showModel} onClose={() => setShowModel(false)} onSuccess={() => { fetchLeaves();}} />
 
         </div>
     )
