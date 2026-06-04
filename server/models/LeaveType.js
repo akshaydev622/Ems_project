@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const leaveTypeSchema = new mongoose.Schema({
     name: {type:String, required:true, unique:true},
-    maxDaysAllowed: {type:Number, required:true},
+    annualLimit: {type:Number, required:true},
     createdBy: {type: mongoose.Schema.Types.ObjectId, ref:"User",default:null},
     status: {type:String, enum:["ACTIVE", "INACTIVE"], default:"ACTIVE"},
     isDeleted: {type:Boolean, default:false},

@@ -13,6 +13,9 @@ const Leave = () => {
     if (location.pathname === '/leave/types') {
       return <Navigate to="/leave" replace />
     }
+    if (location.pathname === '/leave/allotment') {
+      return <Navigate to="/leave" replace />
+    }
     return <UserLeave />
   }
 
