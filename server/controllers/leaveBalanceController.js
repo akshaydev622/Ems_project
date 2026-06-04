@@ -4,16 +4,24 @@ import Employee from "../models/Employee.js";
 export const getLeaveBalances = async (req, res) => {
     try {
         const session = req.session;
+        const {year} = req.query; 
         const employee = await Employee.findOne({ userId: session.userId });
         
         if (!employee) {
             return res.status(404).json({ error: "Employee not found" });
         }
 
-        const balances = await EmployeeLeaveBalance.find({
+        const filter = {
             employeeId: employee._id,
-            isDeleted: false
-        }).populate("leaveTypeId", "name");
+            isDeleted: false,            
+        }
+
+        // Optional year filter
+        if (year) {
+            filter.year = Number(year);
+        }
+
+        const balances = await EmployeeLeaveBalance.find(filter).populate("leaveTypeId", "name");
 
         const formattedBalances = balances.map(b => ({
             leaveType: b.leaveTypeId?.name || "Unknown",

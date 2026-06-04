@@ -509,7 +509,7 @@ export const getLeaveBalanceSummary = async (req, res) => {
         }
         const balances = await EmployeeLeaveBalance.find(match)
             .populate("employeeId", "firstName lastName")
-            .populate("leaveTypeId", "code");
+            .populate("leaveTypeId", "name");
 
         const result = {};
 
@@ -519,14 +519,24 @@ export const getLeaveBalanceSummary = async (req, res) => {
                 result[key] = {
                     employeeId: item.employeeId._id,
                     employeeName: `${item.employeeId.firstName} ${item.employeeId.lastName}`,
-                    year: item.year
+                    year: item.year,
+                    leaveBalances: []
                 };
             }
-            result[key][item.leaveTypeId.code] = {
+
+            let code = item.leaveTypeId.name;
+            if (code) {
+                code = code.split(' ').map(w => w[0]).join('').toUpperCase();
+            } else {
+                code = "UN";
+            }
+
+            result[key].leaveBalances.push({
+                code: code,
                 allocated: item.allocated,
                 used: item.used,
                 remaining: item.remaining
-            };
+            });
         });
 
         return res.json({

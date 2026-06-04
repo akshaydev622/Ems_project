@@ -31,6 +31,7 @@ const LeaveAllotment = () => {
             setLoading(true);
             const response = await api.get('/leave-allotment/leave-balance-summary');
             setLeaveAllotments(response.data.data);
+            console.log("leave allotments:", response.data.data);
         } catch (error) {
             toast.error(error.response?.data?.error || "Failed to fetch leave allotments");
         } finally {
