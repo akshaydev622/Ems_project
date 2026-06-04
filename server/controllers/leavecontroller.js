@@ -1,5 +1,7 @@
 import Employee from "../models/Employee.js";
 import LeaveApplication from "../models/LeaveApplication.js";
+import LeaveType from "../models/LeaveType.js";
+import EmployeeLeaveBalance from "../models/EmployeeLeaveBalance.js";
 
 
 // create leave
@@ -87,10 +89,62 @@ export const updateLeaveStatus = async (req,res)=>{
         if(!["APPROVED", "PENDING", "REJECTED"].includes(status)){
             return res.status(400).json({error:"Invalid Status"});
         };
-        const leave = await LeaveApplication.findByIdAndUpdate(req.params.id, {status}, {returnDocument: "after"});
+
+        const leave = await LeaveApplication.findById(req.params.id);
+        if (!leave) {
+            return res.status(404).json({ error: "Leave application not found" });
+        }
+
+        // If approving and it wasn't already approved
+        if (status === "APPROVED" && leave.status !== "APPROVED") {
+            const startDate = new Date(leave.startDate);
+            const endDate = new Date(leave.endDate);
+            // Calculate inclusive days
+            const diffTime = Math.abs(endDate - startDate);
+            const approvedDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+            
+            // Find LeaveType by matching name (case-insensitive) to LeaveApplication type enum
+            const leaveTypeRecord = await LeaveType.findOne({ 
+                name: new RegExp(`^${leave.type}$`, 'i'), 
+                status: "ACTIVE", 
+                isDeleted: false 
+            });
+            
+            if (!leaveTypeRecord) {
+                return res.status(400).json({ error: `No active leave type found matching '${leave.type}'` });
+            }
+            
+            const year = startDate.getFullYear();
+            
+            // Find employee balance
+            const balance = await EmployeeLeaveBalance.findOne({
+                employeeId: leave.employeeId,
+                leaveTypeId: leaveTypeRecord._id,
+                year: year,
+                isDeleted: false
+            });
+            
+            if (!balance) {
+                return res.status(400).json({ error: "No leave balance allocated for this leave type and year." });
+            }
+            
+            if (balance.remaining < approvedDays) {
+                return res.status(400).json({ error: `Insufficient leave balance. Requested: ${approvedDays}, Remaining: ${balance.remaining}` });
+            }
+            
+            // Deduct balance
+            balance.used += approvedDays;
+            balance.remaining -= approvedDays;
+            await balance.save();
+        }
+
+        leave.status = status;
+        await leave.save();
+        
         return res.json({success:true, data: leave});
         
     }catch (error){
+        console.error("Update leave status error:", error);
         return res.status(500).json({error:"Failed"});
     }
 }

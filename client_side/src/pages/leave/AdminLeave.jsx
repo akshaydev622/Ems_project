@@ -3,6 +3,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom'
 const AdminLeave = () => {
   const location = useLocation()
   const isTypesRoute = location.pathname === '/leave/types'
+  const isAllotmentRoute = location.pathname === '/leave/allotment'
   const isAllLeavesRoute = location.pathname === '/leave' || location.pathname === '/leave/'
 
   const navButtonBase = 'inline-flex items-center justify-center gap-2 min-w-35 px-4 py-2 rounded-md text-sm font-medium transition duration-200'
@@ -30,6 +31,12 @@ const AdminLeave = () => {
           className={`${navButtonBase} ${isTypesRoute ? activeButton : inactiveButton}`}
         >
           Leave Types
+        </Link>
+        <Link
+          to="/leave/allotment"
+          className={`${navButtonBase} ${isAllotmentRoute ? activeButton : inactiveButton}`}
+        >
+          Leave Allotment
         </Link>
       </div>
 

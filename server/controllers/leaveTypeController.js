@@ -23,13 +23,13 @@ export const getLeaveTypes = async (req, res) =>{
 // POST /api/create-leave-type
 export const createLeaveType = async (req, res) => {
     try{
-        const {name, maxDaysAllowed, status} = req.body;
-        if(!name || maxDaysAllowed === undefined) {
-            return res.status(400).json({success:false, message:"Name and maximum days allowed are required"});
+        const {name, annualLimit, status} = req.body;
+        if(!name || annualLimit === undefined) {
+            return res.status(400).json({success:false, message:"Name and annual limit are required"});
         }
         const leaveType = await LeaveType.create({
             name,
-            maxDaysAllowed,
+            annualLimit,
             status: status || "ACTIVE",
             createdBy: req.session.userId,
         });
@@ -48,7 +48,7 @@ export const createLeaveType = async (req, res) => {
 export const updateLeaveType = async (req, res) => {
      try {
         const {id} = req.params;
-        const {parentId, description, status} = req.body;
+        const {parentId, description, status, annualLimit} = req.body;
 
         const leaveType = await LeaveType.findById(id);
         if(!leaveType) {
@@ -58,7 +58,8 @@ export const updateLeaveType = async (req, res) => {
         await LeaveType.findByIdAndUpdate(id, {
             parentId: parentId || null,
             description,
-            status
+            status,
+            annualLimit
         });
         return res.json({success:true, message:"Leave type updated successfully"});
     }catch (error) {

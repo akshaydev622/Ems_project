@@ -7,7 +7,7 @@ const LeaveTypeModel = ({ open, onClose, onSuccess, initialData }) => {
     const [loading, setLoading] = useState(false);
     const [values, setValues] = useState({
         name: '',
-        maxDaysAllowed: '',
+        annualLimit: '',
         status: 'ACTIVE',
     });
 
@@ -17,11 +17,11 @@ const LeaveTypeModel = ({ open, onClose, onSuccess, initialData }) => {
         if (isEditMode) {
             setValues({
                 name: initialData.name || '',
-                maxDaysAllowed: initialData.maxDaysAllowed || '',
+                annualLimit: initialData.annualLimit || '',
                 status: initialData.status || 'ACTIVE',
             });
         } else {
-            setValues({ name: '', maxDaysAllowed: '', status: 'ACTIVE' });
+            setValues({ name: '', annualLimit: '', status: 'ACTIVE' });
         }
     }, [initialData, isEditMode, open]);
 
@@ -36,7 +36,7 @@ const LeaveTypeModel = ({ open, onClose, onSuccess, initialData }) => {
         try {
             const payload = {
                 name: values.name,
-                maxDaysAllowed: Number(values.maxDaysAllowed),
+                annualLimit: Number(values.annualLimit),
                 status: values.status,
             };
 
@@ -91,13 +91,13 @@ const LeaveTypeModel = ({ open, onClose, onSuccess, initialData }) => {
 
             <div>
                 <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
-                    <CalendarDays className="w-4 h-4 text-slate-400" />Maximum Days Allowed
+                    <CalendarDays className="w-4 h-4 text-slate-400" />Annual Limit
                 </label>
                 <input
                     type="number"
                     min="0"
-                    name="maxDaysAllowed"
-                    value={values.maxDaysAllowed}
+                    name="annualLimit"
+                    value={values.annualLimit}
                     onChange={handleChange}
                     required
                     className="border border-slate-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"

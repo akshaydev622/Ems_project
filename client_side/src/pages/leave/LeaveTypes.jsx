@@ -124,7 +124,7 @@ const LeaveTypes = () => {
               <tr>
                 <th>Leave Type</th>
                 <th>Created Date</th>
-                <th>Max Allow Day</th>
+                <th>Annual Limit</th>
                 <th>Status</th>
                 <th className="text-center">Actions</th>
               </tr>
@@ -142,7 +142,7 @@ const LeaveTypes = () => {
                     <td className="text-slate-900">{type.name}</td>
                     <td className="text-xs text-slate-500">{format(new Date(type.createdAt), 'MMM dd')}</td>
                     <td>
-                      <span className="badge bg-slate-100 text-slate-600">{type.maxDaysAllowed} days</span>
+                      <span className="badge bg-slate-100 text-slate-600">{type.annualLimit} days</span>
                     </td>
                     <td className="text-xs text-slate-500">
                       <select
