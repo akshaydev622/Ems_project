@@ -329,99 +329,72 @@ export const employeeAllotment = async (req, res) => {
             isDeleted: false,
         });
 
+        let updatedBalance;
+
         if (existingBalance) {
-            return res.status(400).json({ error: "Leave already allotted for this employee, leave type and year." });
+            // Update existing record
+            existingBalance.allocated += days;
+            existingBalance.remaining += days;
+            if (reason) {
+                existingBalance.reason = reason;
+            }
+
+            updatedBalance = await existingBalance.save();
+
+            return res.json({
+                success: true,
+                message: "Leave allocation updated successfully",
+                data: {
+                    _id: updatedBalance._id.toString(),
+                    employeeId: updatedBalance.employeeId.toString(),
+                    leaveTypeId: updatedBalance.leaveTypeId.toString(),
+                    year: updatedBalance.year,
+                    allocated: updatedBalance.allocated,
+                    used: updatedBalance.used,
+                    remaining: updatedBalance.remaining,
+                    reason: updatedBalance.reason,
+                    status: updatedBalance.status,
+                    createdBy: updatedBalance.createdBy?.toString(),
+                    updatedAt: updatedBalance.updatedAt,
+                },
+                isNew: false,
+            });
+        } else {
+            // Create new record
+            updatedBalance = await EmployeeLeaveBalance.create({
+                employeeId: employee._id,
+                leaveTypeId: leaveType._id,
+                year: year,
+                allocated: days,
+                used: 0,
+                remaining: days,
+                reason: reason || null,
+                createdBy: adminId,
+                status: "ACTIVE",
+            });
+
+            return res.json({
+                success: true,
+                message: "Leave allocation created successfully",
+                data: {
+                    _id: updatedBalance._id.toString(),
+                    employeeId: updatedBalance.employeeId.toString(),
+                    leaveTypeId: updatedBalance.leaveTypeId.toString(),
+                    year: updatedBalance.year,
+                    allocated: updatedBalance.allocated,
+                    used: updatedBalance.used,
+                    remaining: updatedBalance.remaining,
+                    reason: updatedBalance.reason,
+                    status: updatedBalance.status,
+                    createdBy: updatedBalance.createdBy?.toString(),
+                    createdAt: updatedBalance.createdAt,
+                },
+                isNew: true,
+            });
         }
-
-        // Create new record
-        const newBalance = await EmployeeLeaveBalance.create({
-            employeeId: employee._id,
-            leaveTypeId: leaveType._id,
-            year: year,
-            allocated: days,
-            used: 0,
-            remaining: days,
-            reason: reason || null,
-            createdBy: adminId,
-            status: "ACTIVE",
-        });
-
-        return res.json({
-            success: true,
-            message: "Leave allocation created successfully",
-            data: {
-                _id: newBalance._id.toString(),
-                employeeId: newBalance.employeeId.toString(),
-                leaveTypeId: newBalance.leaveTypeId.toString(),
-                year: newBalance.year,
-                allocated: newBalance.allocated,
-                used: newBalance.used,
-                remaining: newBalance.remaining,
-                reason: newBalance.reason,
-                status: newBalance.status,
-                createdBy: newBalance.createdBy?.toString(),
-                createdAt: newBalance.createdAt,
-            },
-            isNew: true,
-        });
     } catch (error) {
         console.error("Employee allotment error:", error);
         return res.status(500).json({ error: "Failed to process employee allotment" });
-    }
-};
-
-// Preview Employee Leave Allotment
-export const previewEmployeeAllotment = async (req, res) => {
-    try {
-        const { employeeId, leaveTypeId, year, days } = req.body;
-
-        // Validate inputs
-        if (!employeeId) return res.status(400).json({ error: "Employee ID is required" });
-        if (!leaveTypeId) return res.status(400).json({ error: "Leave type ID is required" });
-        if (!year || typeof year !== "number" || year < 2000 || year > 2100) return res.status(400).json({ error: "Invalid year provided" });
-        if (typeof days !== "number" || days <= 0) return res.status(400).json({ error: "Days must be a positive number" });
-
-        // Verify employee exists and is active
-        const employee = await Employee.findById(employeeId);
-        if (!employee || employee.isDeleted) return res.status(404).json({ error: "Employee not found" });
-        if (employee.employeeStatus !== "ACTIVE") return res.status(400).json({ error: "Employee is not active" });
-
-        // Verify leave type exists and is active
-        const leaveType = await LeaveType.findById(leaveTypeId);
-        if (!leaveType || leaveType.status !== "ACTIVE" || leaveType.isDeleted) return res.status(404).json({ error: "Leave type not found or inactive" });
-
-        // Check if days exceed annual limit
-        if (days > leaveType.annualLimit) {
-            return res.status(400).json({
-                error: `Days (${days}) exceed annual limit (${leaveType.annualLimit})`
-            });
-        }
-
-        // Check if allocation already exists
-        const existingBalance = await EmployeeLeaveBalance.findOne({
-            employeeId: employee._id,
-            leaveTypeId: leaveType._id,
-            year: year,
-            isDeleted: false,
-        });
-
-        if (existingBalance) {
-            return res.status(400).json({ error: "Leave already allotted for this employee, leave type and year." });
-        }
-
-        return res.json({
-            success: true,
-            data: {
-                employeeName: `${employee.firstName} ${employee.lastName}`,
-                leaveTypeName: leaveType.name,
-                year,
-                annualLimit: leaveType.annualLimit,
-                requestedDays: days
-            }
-        });
-    } catch (error) {
-        console.error("Preview employee allotment error:", error);
-        return res.status(500).json({ error: "Failed to generate preview" });
     }
 };
 
@@ -500,21 +473,16 @@ export const getAllocationSummary = async (req, res) => {
 
 export const getLeaveBalanceSummary = async (req, res) => {
     try {
-        const { year, employeeId } = req.query;
+        const { year } = req.query;
         const match = {
             isDeleted: false
         };
         if (year) {
             match.year = Number(year);
         }
-        if (employeeId) {
-            match.employeeId = employeeId;
-        }
-
         const balances = await EmployeeLeaveBalance.find(match)
-            .populate("employeeId", "firstName lastName email")
-            .populate("leaveTypeId", "name annualLimit")
-            .sort({ year: -1, "employeeId._id": 1 });
+            .populate("employeeId", "firstName lastName")
+            .populate("leaveTypeId", "code");
 
         const result = {};
 
@@ -522,37 +490,19 @@ export const getLeaveBalanceSummary = async (req, res) => {
             const key = `${item.employeeId._id}-${item.year}`;
             if (!result[key]) {
                 result[key] = {
-                    employeeId: item.employeeId._id.toString(),
+                    employeeId: item.employeeId._id,
                     employeeName: `${item.employeeId.firstName} ${item.employeeId.lastName}`,
-                    employeeEmail: item.employeeId.email,
-                    year: item.year,
-                    leaveBalances: []
+                    year: item.year
                 };
             }
-
-            // Generate initials from leave type name
-            let code = item.leaveTypeId.name;
-            if (code) {
-                code = code.split(' ').map(w => w[0]).join('').toUpperCase();
-            } else {
-                code = "UN";
-            }
-
-            result[key].leaveBalances.push({
-                leaveTypeId: item.leaveTypeId._id.toString(),
-                leaveTypeName: item.leaveTypeId.name,
-                code: code,
-                maxDays: item.leaveTypeId.annualLimit,
+            result[key][item.leaveTypeId.code] = {
                 allocated: item.allocated,
                 used: item.used,
-                remaining: item.remaining,
-                reason: item.reason,
-                status: item.status
-            });
+                remaining: item.remaining
+            };
         });
 
         return res.json({
-            success: true,
             data: Object.values(result)
         });
 
