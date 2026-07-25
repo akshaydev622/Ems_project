@@ -25,6 +25,30 @@
             hover:bg-slate-50 hover:border-slate-300 transition-all duration-200;
     }
 
+    .btn-success {
+        @apply bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2;
+    }
+
+    .btn-success-light{
+        @apply bg-emerald-50 text-emerald-700 border border-emerald-200  hover:bg-emerald-100 hover:border-emerald-300;
+    }
+
+    .btn-danger{
+        @apply bg-rose-600 text-white hover:bg-rose-700 ;
+    }
+
+    .btn-danger-light{
+        @apply bg-rose-50 text-rose-700 border border-rose-200  hover:bg-rose-100 hover:border-rose-300;
+    }
+
+    .btn-warning{
+        @apply bg-amber-600 text-white hover:bg-amber-700 ;
+    }
+
+    .btn-warning-light{
+        @apply bg-amber-50 text-amber-700 border border-amber-200  hover:bg-amber-100 hover:border-amber-300;
+    }
+
     /* Input, Select, Textarea styles */
     input,
     select,

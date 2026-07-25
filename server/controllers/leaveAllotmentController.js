@@ -511,6 +511,7 @@ export const getLeaveBalanceSummary = async (req, res) => {
             .populate("employeeId", "firstName lastName")
             .populate("leaveTypeId", "name");
 
+
         const result = {};
 
         balances.forEach(item => {

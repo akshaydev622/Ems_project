@@ -1,9 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react'
+import { Link, Outlet, useLocation } from 'react-router-dom'
 import api from '../api/axios';
 import { DEPARTMENTS, dummyEmployeeData } from '../assets/assets.jsx';
 import { Plus, Search, X } from 'lucide-react';
 import EmployeeCard from '../components/EmployeeCard.jsx';
 import EmployeeForm from '../components/EmployeeForm.jsx';
+import EmployeeList from '../components/employee/EmployeeList.jsx';
+import Button from '../components/shared/utils/Button.jsx';
 
 const Employees = () => {
 
@@ -13,6 +16,14 @@ const Employees = () => {
   const [selectedDept, setSelectedDept] = useState("");
   const [editEmployee, setEditEmployee] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+
+  const location = useLocation()
+  const isTeamsRoute = location.pathname === '/employees/teams'
+  const isAllEmployeesRoute = location.pathname === '/employees' || location.pathname === '/employees/'
+
+  const navButtonBase = 'inline-flex items-center justify-center gap-2 min-w-35 px-4 py-2 rounded-md text-sm font-medium transition duration-200'
+  const activeButton = 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-md shadow-indigo-500/20'
+  const inactiveButton = 'bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 shadow-sm'
   
 
   const fetchEmployees = useCallback(async ()=>{
@@ -44,84 +55,25 @@ const Employees = () => {
         <button onClick={()=>setShowCreateModal(true)} className="btn-primary flex items-center gap-2 w-full sm:w-auto justify-center" >
           <Plus size={16} /> Add Employee
         </button>
+        {/* <Button variant="primary" onClick={()=>setShowCreateModal(true)} leftIcon={<Plus size={16} />} >Add Employee</Button> */}
       </div>
-        {/* search bar */}
-      <div className="flex flex-col sm:flex-row mb-6 gap-3">
-        <div className="relative flex-1">
-          <Search className="absolute laft-3.5 top-1/3 transform-translate-y-1/2 text-slate-400 h-4"/>
-          <input className="w-full" id="searchInput" placeholder="   Search Employee..." onChange={(e)=>setSearch(e.target.value)} value={search} />
-        </div>
-        <select className="max-w-40" value={selectedDept} onChange={(e)=>setSelectedDept(e.target.value)}>
-          <option value="">All Department</option>
-          {DEPARTMENTS.map((deptName)=>(
-            <option key={deptName} value={deptName}>{deptName}</option>
-          ))}
-        </select >
+      <div className="flex flex-wrap items-center gap-2 mb-6">
+        <Link
+          to="/employees"
+          className={`${navButtonBase} ${isAllEmployeesRoute ? activeButton : inactiveButton}`}
+        >
+          All Employees
+        </Link>
+        <Link
+          to="/employees/teams"
+          className={`${navButtonBase} ${isTeamsRoute ? activeButton : inactiveButton}`}
+        >
+          Teams
+        </Link>
       </div>
+      <Outlet />
 
-          {/* employee card */}
-        {loading ? (
-        <div className="flex justify-center p-12">
-          <div className="animate-spin w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full" />
-        </div>
-        ): <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
-        {filtered.length === 0 ? (
-          <p className="col-span-full text-center py-16 text-slate-400 bg-white rounded-2xl border border-dashed border-slate-200">No Employee Found</p>
-        ) : (
-          filtered.map((emp)=><EmployeeCard key={emp.id} employee={emp} onDelete={fetchEmployees} onEdit = { (e)=>setEditEmployee(e)} />)
-        )}
-        
-        {/* create employee model */}
 
-        {showCreateModal && (
-          <div className="fixed bg-black/40 backdrop-blur-sm inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto" onClick={()=>setShowCreateModal(false)}>
-            <div className="fidex inset-0" />
-            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl animate-fade-in mt-100" onClick={(e)=>e.stopPropagation()}>
-              <div className="flex items-center justify-between p-6 pb-0">
-                <div>
-                  <h2 className="text-lg font-semibold text-slate-900">Add New Employee</h2>
-                  <p className="text-sm text-slate-500 mt-0.5">Create a user account and profile</p>
-                </div>
-                <button onClick={()=>setShowCreateModal(false)} className="p-2 rounded-lg hover:bg-slate-100 transition-colors text-slate-400 hover:text-slate-600 ">
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              <div className="p-6">
-                <EmployeeForm onSuccess={()=>{
-                setShowCreateModal(false);
-                fetchEmployees();
-                }} onCancel={()=>setShowCreateModal(false)}/>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* edit employee model */}
-
-        {editEmployee && (
-          <div className="fixed bg-black/40 backdrop-blur-sm inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto" onClick={()=>setEditEmployee(null)} >
-            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl my-8 animate-fade-in mt-100" onClick={(e)=>e.stopPropagation()}>
-              <div className="flex items-center justify-between p-6 pb-0">
-                <div>
-                  <h2 className="text-lg font-semibold text-slate-900">Edit Employee</h2>
-                  <p className="text-sm text-slate-500 mt-0.5">Update Employee Details</p>
-                </div>
-                <button onClick={()=>setEditEmployee(null)} className="p-2 rounded-lg hover:bg-slate-100 transition-colors text-slate-400 hover:text-slate-600 ">
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              <div className="p-6">
-                <EmployeeForm initialData={editEmployee} onSuccess={()=>{
-                setEditEmployee(null);
-                fetchEmployees();
-                }} onCancel={()=>setEditEmployee(null)}/>
-              </div>
-
-            </div>
-          </div>
-        )}
-
-        </div> }
     </div>
   )
 }

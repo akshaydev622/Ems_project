@@ -15,6 +15,8 @@ import LoginFrom from "./components/LoginFrom"
 import Attendance from "./pages/Attendance"
 import Employees from "./pages/Employees"
 import Departments from "./pages/Departments"
+import AllEmployees from "./pages/Employee/AllEmployee.jsx";
+import Teams from "./pages/Employee/Teams.jsx";
 
 const App = () => {
   return (
@@ -30,7 +32,11 @@ const App = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/attendance" element={<Attendance />} />
           <Route path="/departments" element={<Departments />} />
-          <Route path="/employees" element={<Employees />} />
+          {/* <Route path="/employees" element={<Employees />} /> */}
+          <Route path="/employees" element={<Employees />}>
+            <Route index element={<AllEmployees />} />
+            <Route path="teams" element={<Teams />} />
+          </Route>
           <Route path="/leave" element={<Leave />}>
             <Route element={<AdminLeave />}>
               <Route index element={<AllLeaves />} />
