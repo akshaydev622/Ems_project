@@ -5,14 +5,18 @@ import toast from 'react-hot-toast';
 
 const CheckinButton = ({todayRecord, onAction}) => {
     const [loading, setLoading] = useState(false);
-    const handleAttendance = async ()=>{
+    const handleAttendance = async () => {
         setLoading(true);
-        try{
-            await api.post("/attendance");
+        try {
+            const now = new Date();
+            await api.post("/attendance", {
+                date: now.toISOString(),
+                time: now.toISOString()
+            });
             onAction();
-        }catch(error){
+        } catch (error) {
             toast.error(error.response?.data?.error || error.message);
-        }finally{
+        } finally {
             setLoading(false);
         }
     }
