@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import { dummyProfileData } from "../assets/assets";
 import Loading from "../components/Loading";
 import { Lock } from "lucide-react";
 import ProfileFrom from "../components/ProfileFrom";
@@ -17,24 +16,24 @@ const Settings = () => {
 
   const isAdmin = true;
 
-  const fetchProfile = async ()=>{
-    try{
-        const res = await api.get("/profile");
-        const profile = res.data;
-        if(profile) setProfile(profile);
-    }catch(error){
-        toast.error(error.response?.data?.error || error.message);
-        setProfile(null);
-    }finally{
-        setLoading(false);
-    } 
+  const fetchProfile = async () => {
+    try {
+      const res = await api.get("/profile");
+      const profile = res.data;
+      if (profile) setProfile(profile);
+    } catch (error) {
+      toast.error(error.response?.data?.error || error.message);
+      setProfile(null);
+    } finally {
+      setLoading(false);
+    }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchProfile()
-  },[user])
+  }, [user])
 
-  if(loading) return <Loading />
+  if (loading) return <Loading />
 
   return (
     <div className="animate-fade-in">
@@ -43,7 +42,7 @@ const Settings = () => {
         <p className="page-subtitle">Manage your account and preferences</p>
       </div>
 
-      {profile && 
+      {profile &&
         <ProfileFrom initialData={profile} onSuccess={fetchProfile} />
       }
 
@@ -51,16 +50,16 @@ const Settings = () => {
       <div className="card max-w-md p-6 flex items-center justify-between ">
         <div className="flex item-center gap-3">
           <div className="p-2.5 text-slate-100 rounded-lg">
-            <Lock className="w-4 h-4 text-slate-600"/>
+            <Lock className="w-4 h-4 text-slate-600" />
           </div>
           <div>
             <p className="font-medium text-slate-900">Password</p>
             <p className="text-sm text-slate-500">Update your account password</p>
           </div>
         </div>
-        <button onClick={()=>setShowPasswordModel(true)} className="btn-secondary text-sm">Change</button>
+        <button onClick={() => setShowPasswordModel(true)} className="btn-secondary text-sm">Change</button>
       </div>
-      <ChangePasswordModel open={showPasswordModel} onClose={()=>{setShowPasswordModel(false)}} />
+      <ChangePasswordModel open={showPasswordModel} onClose={() => { setShowPasswordModel(false) }} />
 
     </div>
   )
