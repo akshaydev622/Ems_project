@@ -1,7 +1,7 @@
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom"
 import { dummyProfileData } from "../../assets/assets";
-import { CalendarIcon, ChevronRightIcon, DollarSignIcon, FileTextIcon, LayoutGridIcon, Loader2, LogOutIcon, LucideLogOut, MenuIcon, SettingsIcon, UserIcon, XIcon, Building2Icon } from "lucide-react";
+import { CalendarIcon, ChevronRightIcon, DollarSignIcon, FileTextIcon, LayoutGridIcon, Loader2, LogOutIcon, MenuIcon, SettingsIcon, UserIcon, XIcon, Building2Icon, UserCircle2 } from "lucide-react";
 import { useAuth } from "../../context/authcontext";
 import api from "../../api/axios";
 
@@ -38,12 +38,11 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
             { name: "Attendance", href: "/attendance", icon: CalendarIcon },
             { name: "Leave", href: "/leave", icon: FileTextIcon },
             { name: "Payslips", href: "/payslips", icon: DollarSignIcon },
+            { name: "My Profile", href: "/myprofile", icon: UserCircle2 },
             { name: "Settings", href: "/settings", icon: SettingsIcon },
         ],
         DEFAULT: [
-            { name: "Dashboard", href: "/dashboard", icon: LayoutGridIcon },
-            { name: "Leave", href: "/leave", icon: FileTextIcon },
-            { name: "Settings", href: "/settings", icon: SettingsIcon },
+            { name: "Dashboard", href: "/dashboard", icon: LayoutGridIcon }
         ]
     };
 
@@ -73,7 +72,7 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
             </div>
             {/* user profile card */}
             {userName && (
-                <div className="mx-3 mt-4 p-3 rounded-lg bg-white/3 border border-white/4">
+                <div className="mt-4 p-3 rounded-lg bg-white/3 border border-white/4">
                     <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center ring-1 ring-white/10 shrink-0">
                             <span className="text-slate-400 text-xs font-semibold">
@@ -95,7 +94,7 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
             </div>
 
             {/* navigation list */}
-            <div className="flex-1 px-3 space-y-0.5 overflow-y-auto">
+            <div className="flex-1  space-y-0.5 overflow-y-auto">
                 {loading ? (
                     <div className="p-3 gap-2 flex items-center text-slate-500">
                         <Loader2 className="animate-spin w-4 h-4" />
@@ -120,7 +119,7 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
             </div>
 
             {/* logout */}
-            <div className="p-3 border-t border-white/6 ">
+            <div className="py-3 border-t border-white/6 ">
                 <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-[13px] font-medium transition-all duration-150 text-slate-400 hover:text-rose-400 hover:bg-rose-500/8 cursor-pointer">
                     <LogOutIcon className="w-[17px] h-[17px]" />
                     <span className="">Log Out</span>
@@ -136,12 +135,12 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
             {mobileOpen && <div onClick={() => setMobileOpen(false)} className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[60]" />}
 
             {/* sidebar - desktop */}
-            <aside className="hidden lg:flex flex-col h-full w-65 bg-linear-to-r from-slate-900 via-slate-900 to-slate-950 text-white p-6 pb-0 border-r shrink-0 border border-white/4">
+            <aside className="hidden lg:flex flex-col h-full w-65 bg-linear-to-r from-slate-900 via-slate-900 to-slate-950 text-white p-3 pb-0 border-r shrink-0 border border-white/4">
                 {sidebarContent}
             </aside>
 
             {/* sidebar - mobile */}
-            <aside className={`lg:hidden fixed pt-3 inset-y-0 left-0 w-72 bg-linear-to-r from-slate-900 via-slate-900 to-slate-950 text-white z-[70] flex flex-col transform transition-transform duration-300 ${mobileOpen ? "translate-x-0" : "-translate-x-full"} `}>
+            <aside className={`lg:hidden fixed pt-3 inset-y-0 left-0 w-72 bg-linear-to-r from-slate-900 via-slate-900 to-slate-950 p-6 text-white z-[70] flex flex-col transform transition-transform duration-300 ${mobileOpen ? "translate-x-0" : "-translate-x-full"} `}>
                 {sidebarContent}
             </aside>
 

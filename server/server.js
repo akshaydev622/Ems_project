@@ -29,7 +29,16 @@ const PORT = process.env.PORT || 4000;
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-app.use(multer().none());
+// Apply multer().none() for all routes EXCEPT file upload endpoints
+// so that non-file multipart form-data is parsed, but file uploads are not discarded.
+const multerNone = multer().none();
+app.use((req, res, next) => {
+    // Skip multer().none() for document upload route so file buffer is preserved
+    if (req.method === 'POST' && /\/my-profile\/documents/.test(req.originalUrl)) {
+        return next();
+    }
+    return multerNone(req, res, next);
+});
 
 // Serve static storage files (attendance photos, etc.)
 app.use('/storage', express.static(path.join(__dirname, 'storage')));
