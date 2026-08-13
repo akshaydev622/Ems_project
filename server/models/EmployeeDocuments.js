@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-EmployeeDocumentsSchema = new mongoose.Schema({
+const EmployeeDocumentsSchema = new mongoose.Schema({
     employeeId: { type: mongoose.Schema.Types.ObjectId, ref: "Employee", required: true },
     documentName: { type: String, require: true },
     documentId: { type: mongoose.Schema.Types.ObjectId, ref: "Media" },
