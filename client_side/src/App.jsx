@@ -45,9 +45,7 @@ const App = () => {
               <Route path="allotment" element={<LeaveAllotment />} />
             </Route>
           </Route>
-          <Route path="/myprofile" element={<Profile />}>
-            <Route path="profile" element={<Profile />} />
-          </Route >
+          <Route path="/myprofile/*" element={<Profile />} />
           <Route path="/payslips" element={<Payslips />} />
           <Route path="/print-payslip" element={<PrintPaySlip />} />
           <Route path="/settings" element={<Settings />} />

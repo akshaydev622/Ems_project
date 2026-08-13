@@ -14,7 +14,7 @@ const mediaSchema = new mongoose.Schema({
     width: { type: Number, default: null },
     height: { type: Number, default: null },
     caption: { type: String, default: null },
-    cdnPath: { type: String, },
+    cdnPath: { type: String, default: null },
     isDeleted: { type: Boolean, default: false },
 
 }, { timestamps: true });

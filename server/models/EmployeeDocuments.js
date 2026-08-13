@@ -6,7 +6,7 @@ const EmployeeDocumentsSchema = new mongoose.Schema({
     documentId: { type: mongoose.Schema.Types.ObjectId, ref: "Media" },
     isVisible: { type: Boolean, default: true },
     documentStatus: { type: String, enum: ["ACTIVE", "INACTIVE"], default: "ACTIVE" },
-    remarks: { type: String },
+    remarks: { type: String, default: null },
     isDeleted: { type: Boolean, default: false },
 }, { timestamps: true })
 
