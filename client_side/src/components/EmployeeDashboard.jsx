@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 
 const EmployeeDashboard = ({ data }) => {
     const emp = data.employee;
-    console.log(data);
-
     const cards = [
         { icons: CalendarIcon, value: data.currentMonthAttendance, title:"Days Present", subtitle:"This month" },
         { icons: FileTextIcon, value: data.pendingLeaves, title:"Pending Leaves", subtitle:"Awaiting approval" },

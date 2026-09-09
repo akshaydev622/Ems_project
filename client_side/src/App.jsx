@@ -18,6 +18,7 @@ import Departments from "./pages/Departments"
 import AllEmployees from "./pages/Employee/AllEmployee.jsx";
 import Teams from "./pages/Employee/Teams.jsx";
 import Profile from "./pages/Profile/Profile.jsx"
+import Holidays from "./pages/Holidays.jsx"
 
 const App = () => {
   return (
@@ -47,6 +48,7 @@ const App = () => {
           </Route>
           <Route path="/myprofile/*" element={<Profile />} />
           <Route path="/payslips" element={<Payslips />} />
+          <Route path="/holidays" element={<Holidays />} />
           <Route path="/print-payslip" element={<PrintPaySlip />} />
           <Route path="/settings" element={<Settings />} />
         </Route>

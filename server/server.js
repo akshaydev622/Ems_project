@@ -18,6 +18,7 @@ import departmentRouter from './routes/departmentRoutes.js';
 import leaveTypeRouter from './routes/leaveTypeRoutes.js';
 import leaveAllotmentRouter from './routes/leaveAllotmentRoutes.js';
 import leaveBalanceRouter from './routes/leaveBalanceRoutes.js';
+import holidayRouter from './routes/holidayRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -53,6 +54,7 @@ app.use("/api/leaves/", leaveRouter);
 app.use("/api/payslips/", payslipRouter);
 app.use("/api/dashboard/", dashboardRouter);
 app.use("/api/departments/", departmentRouter);
+app.use("/api/holidays/", holidayRouter);
 app.use("/api/leave-types/", leaveTypeRouter);
 app.use("/api/leave-allotment/", leaveAllotmentRouter);
 app.use("/api/leave-balance/", leaveBalanceRouter);

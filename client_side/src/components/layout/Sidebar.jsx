@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom"
 import { dummyProfileData } from "../../assets/assets";
-import { CalendarIcon, ChevronRightIcon, DollarSignIcon, FileTextIcon, LayoutGridIcon, Loader2, LogOutIcon, MenuIcon, SettingsIcon, UserIcon, XIcon, Building2Icon, UserCircle2 } from "lucide-react";
+import { CalendarIcon, CalendarDays, ChevronRightIcon, DollarSignIcon, FileTextIcon, LayoutGridIcon, Loader2, LogOutIcon, MenuIcon, SettingsIcon, UserIcon, XIcon, Building2Icon, UserCircle2 } from "lucide-react";
 import { useAuth } from "../../context/authcontext";
 import api from "../../api/axios";
 
@@ -30,6 +30,7 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
             { name: "Employees", href: "/employees", icon: UserIcon },
             { name: "Departments", href: "/departments", icon: Building2Icon },
             { name: "Leave", href: "/leave", icon: FileTextIcon },
+            { name: "Holidays", href: "/holidays", icon: CalendarDays },
             { name: "Payslips", href: "/payslips", icon: DollarSignIcon },
             { name: "Settings", href: "/settings", icon: SettingsIcon },
         ],
@@ -37,6 +38,7 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
             { name: "Dashboard", href: "/dashboard", icon: LayoutGridIcon },
             { name: "Attendance", href: "/attendance", icon: CalendarIcon },
             { name: "Leave", href: "/leave", icon: FileTextIcon },
+            { name: "Holidays", href: "/holidays", icon: CalendarDays },
             { name: "Payslips", href: "/payslips", icon: DollarSignIcon },
             { name: "My Profile", href: "/myprofile", icon: UserCircle2 },
             { name: "Settings", href: "/settings", icon: SettingsIcon },
