@@ -7,6 +7,7 @@ const employeeSchema = new mongoose.Schema({
     middleName: { type: String },
     lastName: { type: String },
     profilePicture: { type: mongoose.Schema.Types.ObjectId, ref: "Media", default: null },
+    signature: { type: mongoose.Schema.Types.ObjectId, ref: "Media", default: null },
     employeeCode: { type: String, unique: true },
     dateOfBirth: { type: Date, required: true },
     gender: { type: String, enum: ["MALE", "FEMALE", "OTHER"] },

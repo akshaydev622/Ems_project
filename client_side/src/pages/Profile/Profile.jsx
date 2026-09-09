@@ -76,7 +76,7 @@ const Profile = () => {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                 {/* Left Column: Employee Profile Card */}
                 <div className="lg:col-span-4 xl:col-span-4">
-                    <ProfileHeader employee={profileData?.employee} />
+                    <ProfileHeader employee={profileData?.employee} onSaveSuccess={handleSaveSuccess} />
                 </div>
 
                 {/* Right Column: Completion, Tabs, and Details Content */}

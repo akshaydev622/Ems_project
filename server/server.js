@@ -18,6 +18,7 @@ import departmentRouter from './routes/departmentRoutes.js';
 import leaveTypeRouter from './routes/leaveTypeRoutes.js';
 import leaveAllotmentRouter from './routes/leaveAllotmentRoutes.js';
 import leaveBalanceRouter from './routes/leaveBalanceRoutes.js';
+import holidayRouter from './routes/holidayRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -33,8 +34,8 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // so that non-file multipart form-data is parsed, but file uploads are not discarded.
 const multerNone = multer().none();
 app.use((req, res, next) => {
-    // Skip multer().none() for document upload route so file buffer is preserved
-    if (req.method === 'POST' && /\/my-profile\/documents/.test(req.originalUrl)) {
+    // Skip multer().none() for file upload routes so file buffer is preserved
+    if (req.method === 'POST' && /\/my-profile\/(documents|profile-picture)/.test(req.originalUrl)) {
         return next();
     }
     return multerNone(req, res, next);
@@ -53,6 +54,7 @@ app.use("/api/leaves/", leaveRouter);
 app.use("/api/payslips/", payslipRouter);
 app.use("/api/dashboard/", dashboardRouter);
 app.use("/api/departments/", departmentRouter);
+app.use("/api/holidays/", holidayRouter);
 app.use("/api/leave-types/", leaveTypeRouter);
 app.use("/api/leave-allotment/", leaveAllotmentRouter);
 app.use("/api/leave-balance/", leaveBalanceRouter);

@@ -24,7 +24,7 @@ const maskAccountNumber = (accNum) => {
 
 // ─── Helper: get employee from userId ────────────────────────────────────────
 export const getEmployeeByUserId = async (userId) => {
-    const employee = await Employee.findOne({ userId, isDeleted: { $ne: true } });
+    const employee = await Employee.findOne({ userId, isDeleted: { $ne: true } }).populate("profilePicture");
     return employee;
 };
 
@@ -135,6 +135,7 @@ export const getMyProfile = async (userId) => {
             bio: employee.bio,
             skillType: employee.skillType,
             profilePicture: employee.profilePicture,
+            photo: employee.profilePicture?.filePath || null,
         },
         personalDetails: {
             completed: !!(personal && (personal.pancardNumber || personal.aadharcardNumber || personal.currentAddress)),
@@ -475,3 +476,43 @@ export const deleteDocument = async (userId, docId) => {
     doc.isDeleted = true;
     await doc.save();
 };
+
+// ─── Profile Picture ──────────────────────────────────────────────────────────
+export const uploadProfilePicture = async (userId, file) => {
+    const employee = await getEmployeeByUserId(userId);
+    if (!employee) throw new Error("Employee not found");
+
+    const uploadDir = path.join(__dirname, "../storage/profile_pictures");
+    if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+
+    const ext = path.extname(file.originalname) || ".png";
+    const fileName = `profile_${employee._id}_${Date.now()}${ext}`;
+    const filePath = path.join(uploadDir, fileName);
+    fs.writeFileSync(filePath, file.buffer);
+
+    const media = await Media.create({
+        mediaType: "PROFILE_PICTURE",
+        title: `Profile Picture - ${employee.firstName} ${employee.lastName || ""}`.trim(),
+        fileName,
+        filePath: `/storage/profile_pictures/${fileName}`,
+        fileSize: String(file.size),
+        fileType: file.mimetype,
+    });
+
+    await Employee.findByIdAndUpdate(employee._id, { profilePicture: media._id });
+
+    return {
+        profilePicture: media,
+        photo: `/storage/profile_pictures/${fileName}`,
+    };
+};
+
+export const removeProfilePicture = async (userId) => {
+    const employee = await getEmployeeByUserId(userId);
+    if (!employee) throw new Error("Employee not found");
+
+    await Employee.findByIdAndUpdate(employee._id, { profilePicture: null });
+    return { success: true };
+};
+
+

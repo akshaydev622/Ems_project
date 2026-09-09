@@ -38,3 +38,13 @@ export const uploadDocument = (formData) =>
         headers: { "Content-Type": "multipart/form-data" },
     });
 export const deleteDocument = (docId) => api.delete(`/profile/my-profile/documents/${docId}`);
+
+// ─── Profile Picture ──────────────────────────────────────────────────────────
+export const uploadProfilePicture = (formData) =>
+    api.post("/profile/my-profile/profile-picture", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
+export const removeProfilePicture = () =>
+    api.delete("/profile/my-profile/profile-picture");
+
+

@@ -11,6 +11,7 @@ import {
     addExperience, updateExperience, deleteExperience,
     setFresherStatus,
     getDocuments, uploadDocument, deleteDocument,
+    uploadProfilePicture, removeProfilePicture,
     uploadMiddleware,
 } from "../controllers/employeeProfileController.js";
 
@@ -22,6 +23,10 @@ profileRouter.put("/", protect, updateProfile);
 
 // ── My Profile overview ──────────────────────────────────────────────────────
 profileRouter.get("/my-profile", protect, getMyProfile);
+
+// ── Profile Picture ────────────────────────────────────────────────────────────
+profileRouter.post("/my-profile/profile-picture", protect, uploadMiddleware, uploadProfilePicture);
+profileRouter.delete("/my-profile/profile-picture", protect, removeProfilePicture);
 
 // ── Personal Details ─────────────────────────────────────────────────────────
 profileRouter.get("/my-profile/personal", protect, getPersonalDetails);

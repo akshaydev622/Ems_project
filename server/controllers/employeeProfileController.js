@@ -1,21 +1,22 @@
 import * as profileService from "../services/employeeProfileService.js";
 import multer from "multer";
 
-// Multer for memory storage (documents)
+// Multer for memory storage (documents & profile pictures)
 const upload = multer({
     storage: multer.memoryStorage(),
     limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
     fileFilter: (req, file, cb) => {
+        if (!file) return cb(null, false);
         const allowed = [
-            "image/jpeg", "image/png", "image/jpg",
+            "image/jpeg", "image/png", "image/jpg", "image/webp", "image/gif", "image/avif", "image/svg+xml",
             "application/pdf",
             "application/msword",
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         ];
-        if (allowed.includes(file.mimetype)) {
+        if (allowed.includes(file.mimetype) || (file.mimetype && file.mimetype.startsWith("image/"))) {
             cb(null, true);
         } else {
-            cb(new Error("Invalid file type. Only PDF, images and Word documents are allowed."));
+            cb(new Error("Invalid file type. Only PDF, images, and Word documents are allowed."));
         }
     },
 });
@@ -258,3 +259,29 @@ export const deleteDocument = async (req, res) => {
         return res.status(500).json({ success: false, message: "Failed to delete document" });
     }
 };
+
+// ─── Profile Picture ──────────────────────────────────────────────────────────
+export const uploadProfilePicture = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: "No image file provided" });
+        }
+        const data = await profileService.uploadProfilePicture(req.session.userId, req.file);
+        return res.status(200).json({ success: true, data });
+    } catch (error) {
+        console.error("Error uploading profile picture:", error);
+        if (error.message === "Employee not found") return res.status(404).json({ success: false, message: error.message });
+        return res.status(500).json({ success: false, message: error.message || "Failed to upload profile picture" });
+    }
+};
+
+export const removeProfilePicture = async (req, res) => {
+    try {
+        await profileService.removeProfilePicture(req.session.userId);
+        return res.json({ success: true, message: "Profile picture removed successfully" });
+    } catch (error) {
+        if (error.message === "Employee not found") return res.status(404).json({ success: false, message: error.message });
+        return res.status(500).json({ success: false, message: "Failed to remove profile picture" });
+    }
+};
+
