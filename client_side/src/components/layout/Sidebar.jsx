@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom"
 import { dummyProfileData } from "../../assets/assets";
-import { CalendarIcon, CalendarDays, ChevronRightIcon, DollarSignIcon, FileTextIcon, LayoutGridIcon, Loader2, LogOutIcon, MenuIcon, SettingsIcon, UserIcon, XIcon, Building2Icon, UserCircle2 } from "lucide-react";
+import { CalendarIcon, CalendarDays, ChevronRightIcon, DollarSignIcon, 
+    FileTextIcon, LayoutGridIcon, Loader2, LogOutIcon, 
+    MenuIcon, SettingsIcon, UserIcon, XIcon, 
+    Building2Icon, UserCircle2, 
+    Library
+} from "lucide-react";
 import { useAuth } from "../../context/authcontext";
 import api from "../../api/axios";
 
@@ -31,6 +36,7 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
             { name: "Departments", href: "/departments", icon: Building2Icon },
             { name: "Leave", href: "/leave", icon: FileTextIcon },
             { name: "Holidays", href: "/holidays", icon: CalendarDays },
+            { name: "Hr Policies", href: "/policies", icon: Library },
             { name: "Payslips", href: "/payslips", icon: DollarSignIcon },
             { name: "Settings", href: "/settings", icon: SettingsIcon },
         ],
@@ -39,6 +45,7 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
             { name: "Attendance", href: "/attendance", icon: CalendarIcon },
             { name: "Leave", href: "/leave", icon: FileTextIcon },
             { name: "Holidays", href: "/holidays", icon: CalendarDays },
+            { name: "Hr Policies", href: "/policies", icon: Library },
             { name: "Payslips", href: "/payslips", icon: DollarSignIcon },
             { name: "My Profile", href: "/myprofile", icon: UserCircle2 },
             { name: "Settings", href: "/settings", icon: SettingsIcon },
@@ -107,7 +114,7 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
                         const isActive = pathname.startsWith(item.href);
                         return (
                             <Link key={item.name} to={item.href} className={`group flex items-center gap-3 px-3 py-2.5 rounded-md text-[13px] font-medium transition-all duration-150 relative ${isActive ? "bg-indigo-500/12 text-indigo-300" : "text-slate-300 hover:text-white hover:bg-white/4"}`}>
-                                {isActive && <div calssname="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-indigo-500" />}
+                                {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-indigo-500" />}
                                 <item.icon className={`w-[17px] h-[17px] shrink-0 ${isActive ? "text-indigo-300" : "text-slate-400 group-hover:text-slate-300"}`} />
                                 <span className="flex-1 ">{item.name}</span>
                                 {isActive && <ChevronRightIcon className="w-3.5 h-3.5 text-indigo-500/50" />}

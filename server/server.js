@@ -19,6 +19,7 @@ import leaveTypeRouter from './routes/leaveTypeRoutes.js';
 import leaveAllotmentRouter from './routes/leaveAllotmentRoutes.js';
 import leaveBalanceRouter from './routes/leaveBalanceRoutes.js';
 import holidayRouter from './routes/holidayRoutes.js';
+import policyRouter from './routes/policyRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,7 +36,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 const multerNone = multer().none();
 app.use((req, res, next) => {
     // Skip multer().none() for file upload routes so file buffer is preserved
-    if (req.method === 'POST' && /\/my-profile\/(documents|profile-picture)/.test(req.originalUrl)) {
+    if ((req.method === 'POST' || req.method === 'PUT') && /(\/my-profile\/(documents|profile-picture)|\/policies)/.test(req.originalUrl)) {
         return next();
     }
     return multerNone(req, res, next);
@@ -55,6 +56,7 @@ app.use("/api/payslips/", payslipRouter);
 app.use("/api/dashboard/", dashboardRouter);
 app.use("/api/departments/", departmentRouter);
 app.use("/api/holidays/", holidayRouter);
+app.use("/api/policies/", policyRouter);
 app.use("/api/leave-types/", leaveTypeRouter);
 app.use("/api/leave-allotment/", leaveAllotmentRouter);
 app.use("/api/leave-balance/", leaveBalanceRouter);
